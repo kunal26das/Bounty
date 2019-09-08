@@ -6,7 +6,7 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "kudos26.tabs"
+        applicationId "kudos26.bounty"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1

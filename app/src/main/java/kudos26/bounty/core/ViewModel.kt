@@ -1,4 +1,4 @@
-package kudos26.tabs.core
+package kudos26.bounty.core
 
 import androidx.lifecycle.ViewModel
 

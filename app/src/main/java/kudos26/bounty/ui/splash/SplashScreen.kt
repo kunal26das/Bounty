@@ -1,11 +1,11 @@
-package kudos26.tabs.ui.splash
+package kudos26.bounty.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
 import io.reactivex.Completable
-import kudos26.tabs.R
-import kudos26.tabs.core.Activity
-import kudos26.tabs.ui.main.MainActivity
+import kudos26.bounty.R
+import kudos26.bounty.core.Activity
+import kudos26.bounty.ui.main.MainActivity
 import java.util.concurrent.TimeUnit
 
 class SplashScreen : Activity() {

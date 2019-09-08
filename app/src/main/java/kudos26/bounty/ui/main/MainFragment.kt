@@ -1,11 +1,11 @@
-package kudos26.tabs.ui.main
+package kudos26.bounty.ui.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kudos26.tabs.R
+import kudos26.bounty.R
 
 class MainFragment : Fragment() {
 

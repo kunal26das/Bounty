@@ -1,4 +1,4 @@
-package kudos26.tabs;
+package kudos26.bounty;
 
 import org.junit.Test;
 

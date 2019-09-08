@@ -6,16 +6,20 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
     app:cardElevation="12dp">
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/toolbarAppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:layout_width="match_parent"
             android:theme="@style/ToolbarTheme" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/content_loading_progress_bar"
+            style="@style/ContentLoadingProgressBar.Indeterminate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </com.google.android.material.appbar.AppBarLayout>
 </com.google.android.material.card.MaterialCardView>

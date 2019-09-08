@@ -1,21 +1,19 @@
-package kudos26.tabs.core
+package kudos26.bounty.core
 
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class Activity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+abstract class Activity : AppCompatActivity() {
 
     // Activity Life Cycle
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,20 +27,6 @@ abstract class Activity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     override fun onDestroy() {
         CompositeDisposable().clear()
         super.onDestroy()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        return onOptionsItemSelected(item)
     }
 
     // Disposables
