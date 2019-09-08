@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/app_name">
+        <menu>
+            <item
+                android:id="@+id/dark_mode"
+                android:title="Switch Dark Mode" />
+            <item
+                android:id="@+id/settings"
+                android:title="Settings" />
+        </menu>
+    </item>
+</menu>

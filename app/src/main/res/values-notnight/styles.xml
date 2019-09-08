@@ -1,0 +1,30 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="isLightTheme">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:statusBarColor">@color/colorLightMode</item>
+        <item name="android:navigationBarColor">@color/colorLightMode</item>
+        <item name="android:windowBackground">@color/colorLightMode</item>
+
+        <item name="colorPrimary">@color/colorLightMode</item>
+        <item name="colorPrimaryDark">@color/colorLightMode</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="SplashScreen" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="ToolbarTheme">
+        <item name="android:textColorPrimary">@color/colorDarkText</item>
+        <item name="android:textColorSecondary">@color/colorDarkText</item>
+    </style>
+
+</resources>
