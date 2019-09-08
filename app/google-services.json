@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "445684120074",
+    "firebase_url": "https://bounty-4482b.firebaseio.com",
+    "project_id": "bounty-4482b",
+    "storage_bucket": "bounty-4482b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445684120074:android:a350567ef4b213959f3df3",
+        "android_client_info": {
+          "package_name": "kudos26.bounty"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "445684120074-33q4qhd8pdf6qsd6nch19mrpond6hb0f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kudos26.bounty",
+            "certificate_hash": "ff678f052cbf6f6938421fe6b1c87c6de556af1a"
+          }
+        },
+        {
+          "client_id": "445684120074-m0adhcaedfmpmfjri47h3mvb8938jl9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFwwHVv9P2sZF4DewaLK5Ll4wsrC-tkDM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "445684120074-m0adhcaedfmpmfjri47h3mvb8938jl9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
