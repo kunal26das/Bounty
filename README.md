@@ -1,2 +1,2 @@
-# Tabs
+# Bounty
 Bounty
