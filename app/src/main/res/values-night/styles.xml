@@ -8,10 +8,10 @@
         <item name="android:statusBarColor">@color/colorDarkMode</item>
         <item name="android:navigationBarColor">@color/colorDarkMode</item>
         <item name="android:windowBackground">@color/colorDarkMode</item>
-        <!--        <item name="android:background">@color/colorDarkMode</item>-->
         <item name="colorPrimary">@color/colorDarkMode</item>
         <item name="colorPrimaryDark">@color/colorDarkMode</item>
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
 
     <style name="SplashScreen" parent="AppTheme">
