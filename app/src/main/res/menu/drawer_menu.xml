@@ -3,11 +3,14 @@
     <item android:title="@string/appName">
         <menu>
             <item
-                android:id="@+id/dark_mode"
-                android:title="Switch Dark Mode" />
+                android:id="@+id/switch_account"
+                android:title="@string/switch_account" />
             <item
-                android:id="@+id/settings"
-                android:title="Settings" />
+                android:id="@+id/dark_mode"
+                android:title="@string/dark_mode" />
         </menu>
     </item>
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings" />
 </menu>

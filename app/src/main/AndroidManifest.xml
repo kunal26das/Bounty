@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="kudos26.bounty">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--    <uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
+    <!--    <uses-permission android:name="android.permission.USE_CREDENTIALS" />-->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:fullBackupContent="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name="kudos26.bounty.ui.splash.SplashScreen"
@@ -20,10 +25,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <nav-graph android:value="@navigation/app_navigation" />
         </activity>
 
-        <activity android:name="kudos26.bounty.ui.main.MainActivity" />
+        <activity android:name="kudos26.bounty.ui.main.MainActivity">
+            <nav-graph android:value="@navigation/app_navigation" />
+        </activity>
 
     </application>
 

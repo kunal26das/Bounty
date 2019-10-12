@@ -9,11 +9,8 @@
         android:id="@+id/home"
         android:name="kudos26.bounty.ui.main.MainFragment"
         android:label="@string/appName"
-        tools:layout="@layout/fragment_main">
-        <action
-            android:id="@+id/action_home_to_settings"
-            app:destination="@id/settings" />
-    </fragment>
+        tools:layout="@layout/fragment_main" />
+
     <fragment
         android:id="@+id/settings"
         android:name="kudos26.bounty.ui.settings.SettingsFragment"
