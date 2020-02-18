@@ -2,7 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/dark_mode"
-        android:title="@string/dark_mode"
-        app:showAsAction="never" />
+        android:id="@+id/add"
+        android:icon="@drawable/ic_add_24px"
+        android:title="Add"
+        app:showAsAction="always" />
 </menu>

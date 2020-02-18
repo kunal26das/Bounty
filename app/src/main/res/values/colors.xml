@@ -1,12 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <color name="colorDarkMode">#202125</color>
-    <color name="colorLightMode">#FFFFFF</color>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2020.
+  -->
 
-    <color name="colorDarkText">#5f6267</color>
-    <color name="colorLightText">@color/colorLightMode</color>
+<resources>
+    <color name="colorStatusBar">@color/colorWhite</color>
+    <color name="colorNavigationBar">@color/colorWhite</color>
+    <color name="colorWindowBackground">@color/colorWhite</color>
 
     <color name="colorPrimary">#FACADE</color>
-    <color name="colorPrimaryDark">#C799AC</color>
-    <color name="colorAccent">#966B7D</color>
+    <color name="colorPrimaryVariant">#DECADE</color>
+    <color name="colorSecondary">#FACADE</color>
+    <color name="colorSecondaryVariant">#DECADE</color>
+
+    <color name="colorBackground">@color/colorWhite</color>
+    <color name="colorSurface">@color/colorWhite</color>
+    <color name="colorError">#B00020</color>
+
+    <color name="colorOnPrimary">@color/colorWhite</color>
+    <color name="colorOnSecondary">@color/colorBlack</color>
+    <color name="colorOnBackground">@color/colorBlack</color>
+    <color name="colorOnSurface">@color/colorBlack</color>
+    <color name="colorOnError">@color/colorWhite</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#121212</color>
+    <color name="colorMedium">#808080</color>
 </resources>

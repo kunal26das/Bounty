@@ -4,13 +4,15 @@
     package="kudos26.bounty">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!--    <uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
     <!--    <uses-permission android:name="android.permission.USE_CREDENTIALS" />-->
 
     <application
+        android:name=".Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/appName"
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -27,9 +29,22 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="kudos26.bounty.ui.main.MainActivity">
+        <activity android:name="kudos26.bounty.ui.MainActivity">
             <nav-graph android:value="@navigation/app_navigation" />
         </activity>
+
+        <service
+            android:name=".MessagingService"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2292299294214510~1986095740" />
 
     </application>
 

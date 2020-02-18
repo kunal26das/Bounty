@@ -9,40 +9,50 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import kudos26.bounty.R
-import kudos26.bounty.ui.main.MainActivity
+import kudos26.bounty.ui.MainActivity
 
-abstract class Activity : AppCompatActivity(), View.OnClickListener {
+abstract class Activity : AppCompatActivity() {
 
+    abstract val viewModel: ViewModel
+    private val firebaseAuth = FirebaseAuth.getInstance()
     private lateinit var googleSignInClient: GoogleSignInClient
+    private val firebaseDatabase = FirebaseDatabase.getInstance().reference
 
     // Activity Life Cycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_OVERSCAN)
         googleSignInClient = GoogleSignIn.getClient(baseContext, GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build())
-        firebaseAuth = FirebaseAuth.getInstance()
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
     }
 
     override fun onDestroy() {
         CompositeDisposable().clear()
         super.onDestroy()
+    }
+
+    // Firebase
+    fun switchAccount() {
+        googleSignInClient.signOut()
+        startActivityForResult(googleSignInClient.signInIntent, GOOGLE_SIGN_IN)
     }
 
     // Activity Result
@@ -52,6 +62,7 @@ abstract class Activity : AppCompatActivity(), View.OnClickListener {
             when (requestCode) {
                 GOOGLE_SIGN_IN -> {
                     try {
+                        val currentUserId = firebaseAuth.uid
                         firebaseAuth.signInWithCredential(
                                 GoogleAuthProvider.getCredential(GoogleSignIn
                                         .getSignedInAccountFromIntent(data)
@@ -59,9 +70,11 @@ abstract class Activity : AppCompatActivity(), View.OnClickListener {
                                         null
                                 )
                         ).addOnCompleteListener(this) { task ->
-                            when {
-                                task.isSuccessful -> startApplication()
-                                else -> LOGIN_FAILURE.snackBarForLongDuration()
+                            if (!currentUserId.equals(firebaseAuth.uid)) {
+                                when {
+                                    task.isSuccessful -> startApplication()
+                                    else -> LOGIN_FAILURE.snackBarForLongDuration()
+                                }
                             }
                         }
                     } catch (e: ApiException) {
@@ -72,14 +85,42 @@ abstract class Activity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    // Firebase
-    fun switchAccount() {
-        googleSignInClient.signOut()
-        startActivityForResult(googleSignInClient.signInIntent, GOOGLE_SIGN_IN)
+    // Start Application
+    protected fun startApplication() {
+        when {
+            firebaseAuth.currentUser != null -> {
+                updateUserInfo()
+                Intent(this, MainActivity::class.java).apply {
+                    initFirebaseCloudMessaging()
+                    startActivity(this)
+                    finish()
+                }
+            }
+            else -> startActivityForResult(googleSignInClient.signInIntent, GOOGLE_SIGN_IN)
+        }
     }
 
-    // View Click Handler
-    override fun onClick(view: View?) {}
+    private fun initFirebaseCloudMessaging() {
+        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+                .addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        FirebaseMessaging.getInstance().isAutoInitEnabled = true
+                        FirebaseInstanceId.getInstance().instanceId
+                                .addOnSuccessListener {
+                                    firebaseDatabase.child("users").child(firebaseAuth.uid!!).child("token").setValue(it.token)
+                                }
+                    }
+                }
+    }
+
+    private fun updateUserInfo() {
+        firebaseAuth.currentUser?.let {
+            firebaseDatabase.child("users").child(it.uid).apply {
+                child("email").setValue(it.email)
+                child("name").setValue(it.displayName)
+            }
+        }
+    }
 
     // Disposables
     fun dispose(disposable: Disposable) {
@@ -105,7 +146,7 @@ abstract class Activity : AppCompatActivity(), View.OnClickListener {
     }
 
     // Status Bar
-    val statusBarHeight: Int
+    val HEIGHT_STATUS_BAR: Int
         get() {
             resources.getIdentifier(
                     getString(R.string.status_bar_height),
@@ -119,7 +160,6 @@ abstract class Activity : AppCompatActivity(), View.OnClickListener {
     fun String.toastForShortDuration(context: Context = this@Activity, duration: Int = Toast.LENGTH_SHORT): Toast {
         return Toast.makeText(context, this, duration).apply { show() }
     }
-
     fun String.toastForLongDuration(context: Context = this@Activity, duration: Int = Toast.LENGTH_LONG): Toast {
         return Toast.makeText(context, this, duration).apply { show() }
     }
@@ -129,39 +169,17 @@ abstract class Activity : AppCompatActivity(), View.OnClickListener {
         return Snackbar.make(view, this, duration).apply { show() }
     }
 
-    private fun String.snackBarForLongDuration(view: View = findViewById(android.R.id.content), duration: Int = Snackbar.LENGTH_LONG): Snackbar {
+    fun String.snackBarForLongDuration(view: View = findViewById(android.R.id.content), duration: Int = Snackbar.LENGTH_LONG): Snackbar {
         return Snackbar.make(view, this, duration).apply { show() }
     }
 
-    private fun String.snackBarForIndefiniteDuration(view: View = findViewById(android.R.id.content), duration: Int = Snackbar.LENGTH_INDEFINITE): Snackbar {
+    fun String.snackBarForIndefiniteDuration(view: View = findViewById(android.R.id.content), duration: Int = Snackbar.LENGTH_INDEFINITE): Snackbar {
         return Snackbar.make(view, this, duration).apply { show() }
-    }
-
-    // Switch
-    fun SwitchCompat.onCheckedChangeListener(boolean: (Boolean) -> Unit) {
-        this.setOnCheckedChangeListener { _, isChecked ->
-            boolean(isChecked)
-        }
-    }
-
-    // Start Application
-    fun startApplication() {
-        firebaseAuth.currentUser.let {
-            when {
-                it != null -> Intent(this, MainActivity::class.java).apply {
-                    startActivity(this)
-                    finish()
-                }
-                else -> startActivityForResult(googleSignInClient.signInIntent, GOOGLE_SIGN_IN)
-            }
-        }
     }
 
     companion object {
-        lateinit var firebaseAuth: FirebaseAuth
-        private const val GOOGLE_SIGN_IN = 101
-        private const val LOGIN_FAILURE = "Login Failure"
+        const val GOOGLE_SIGN_IN = 101
+        const val LOGIN_FAILURE = "Login Failure"
     }
-
 }
 

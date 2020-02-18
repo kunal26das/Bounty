@@ -3,18 +3,88 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_navigation"
-    app:startDestination="@id/home">
+    app:startDestination="@id/groups">
 
     <fragment
-        android:id="@+id/home"
-        android:name="kudos26.bounty.ui.main.MainFragment"
-        android:label="@string/appName"
-        tools:layout="@layout/fragment_main" />
+        android:id="@+id/groups"
+        android:name="kudos26.bounty.ui.groups.GroupsFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_groups">
+        <action
+            android:id="@+id/action_home_to_addGroup"
+            app:destination="@id/addGroup" />
+        <action
+            android:id="@+id/action_home_to_group"
+            app:destination="@id/group" />
+        <action
+            android:id="@+id/action_home_to_settings"
+            app:destination="@id/settings" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addGroup"
+        android:name="kudos26.bounty.ui.groups.AddGroupFragment"
+        android:label="Add Group"
+        tools:layout="@layout/fragment_add_group" />
+
+    <fragment
+        android:id="@+id/group"
+        android:name="kudos26.bounty.ui.groups.GroupFragment"
+        android:label="@string/group"
+        tools:layout="@layout/fragment_group">
+        <action
+            android:id="@+id/action_group_to_addTransaction"
+            app:destination="@id/addTransaction" />
+        <action
+            android:id="@+id/action_group_to_group_settings"
+            app:destination="@id/group_settings" />
+        <action
+            android:id="@+id/action_group_to_transaction"
+            app:destination="@id/transaction" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/contacts"
+        android:name="kudos26.bounty.ui.contacts.ContactsFragment"
+        android:label="@string/contacts"
+        tools:layout="@layout/fragment_contacts" />
+
+    <fragment
+        android:id="@+id/addTransaction"
+        android:name="kudos26.bounty.ui.transactions.AddTransactionFragment"
+        android:label="Add Transaction"
+        tools:layout="@layout/fragment_add_transaction" />
+
+    <fragment
+        android:id="@+id/group_settings"
+        android:name="kudos26.bounty.ui.groups.GroupSettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_group_settings">
+        <action
+            android:id="@+id/action_group_settings_to_contacts"
+            app:destination="@id/contacts" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/transaction"
+        android:name="kudos26.bounty.ui.transactions.TransactionFragment"
+        android:label="Transaction"
+        tools:layout="@layout/fragment_transaction">
+        <action
+            android:id="@+id/action_transaction_to_addTransaction"
+            app:destination="@id/addTransaction" />
+    </fragment>
 
     <fragment
         android:id="@+id/settings"
         android:name="kudos26.bounty.ui.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/noNetwork"
+        android:name="kudos26.bounty.ui.network.NoNetworkFragment"
+        android:label="No Network"
+        tools:layout="@layout/fragment_no_network" />
 
 </navigation>
