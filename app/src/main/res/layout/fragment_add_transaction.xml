@@ -10,92 +10,139 @@
             type="kudos26.bounty.ui.MainViewModel" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/uifabricToolbarBackgroundColor">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <kudos26.bounty.view.BottomSheetView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="18dp">
+            app:layout_behavior="@string/bottom_sheet_behavior">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/transactionAmountLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
-                app:boxStrokeWidth="2dp"
-                app:endIconDrawable="@drawable/ic_call_split_24px"
-                app:endIconMode="custom"
-                app:prefixText="₹">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/transactionAmount"
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Amount"
-                    android:inputType="number"
-                    app:text="@={viewModel.transaction.amount}" />
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="8dp">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_global">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
-                app:boxStrokeWidth="2dp">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@{viewModel.subtitle}" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/transactionComment"
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/addTransactionButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            app:srcCompat="@drawable/ic_done_24dp"
+                            app:tint="@color/colorAccent" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Comment"
-                    android:text="@={viewModel.transaction.comment}" />
+                    android:layout_weight="1"
+                    android:background="?attr/uifabricBackgroundColor">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/padding_global">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
-                app:boxStrokeWidth="2dp">
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/transactionAmountLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/margin_global"
+                            android:layout_marginBottom="@dimen/margin_global"
+                            app:boxStrokeWidth="2dp"
+                            app:endIconDrawable="@drawable/ic_call_split_24dp"
+                            app:endIconMode="custom"
+                            app:prefixText="₹">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/transactionDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Date"
-                    android:inputType="date"
-                    android:text="@={viewModel.transaction.date}" />
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/transactionAmount"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/amount"
+                                android:imeOptions="actionNext"
+                                android:inputType="number"
+                                android:lines="1"
+                                android:maxLength="15"
+                                app:text="@={viewModel.transaction.amount}" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="18dp"
-                app:boxStrokeWidth="2dp">
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/transactionCommentLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/margin_global"
+                            android:layout_marginBottom="@dimen/margin_global"
+                            app:boxStrokeWidth="2dp"
+                            app:endIconMode="clear_text">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/transactionPayee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Paid By" />
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/transactionComment"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/comment"
+                                android:imeOptions="actionNext"
+                                android:inputType="textCapWords"
+                                android:lines="1"
+                                android:maxLength="25"
+                                android:text="@={viewModel.transaction.comment}" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                        </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/item_add_share" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/transactionDateLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="@dimen/margin_global"
+                            android:layout_marginBottom="@dimen/margin_global"
+                            app:boxStrokeWidth="2dp">
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/transactionDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/date"
+                                android:imeOptions="actionNext"
+                                android:inputType="date"
+                                android:lines="1" />
 
-    </androidx.core.widget.NestedScrollView>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <kudos26.bounty.list.MutableShares
+                            android:id="@+id/mutableShares"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never"
+                            tools:listitem="@layout/item_mutable_share" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.core.widget.NestedScrollView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </kudos26.bounty.view.BottomSheetView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

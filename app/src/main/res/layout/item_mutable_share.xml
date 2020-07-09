@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="share"
+            type="kudos26.bounty.source.model.Share" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/memberName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_global"
+            android:layout_marginBottom="8dp"
+            android:hint="@{share.member.name}"
+            app:boxStrokeWidth="2dp"
+            app:prefixText="₹"
+            app:suffixText="@{String.valueOf(share.percentage)+`%`}">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/memberAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:imeOptions="actionNext"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/memberShare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="2dp"
+            android:progress="@={share.percentage}" />
+    </RelativeLayout>
+</layout>

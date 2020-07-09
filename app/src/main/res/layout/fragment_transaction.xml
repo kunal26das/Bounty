@@ -1,51 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <data>
+
+        <variable
+            name="viewModel"
+            type="kudos26.bounty.ui.MainViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="?attr/uifabricToolbarBackgroundColor">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <kudos26.bounty.view.BottomSheetView
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/bottom_sheet_behavior">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="8dp">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/padding_global">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/sharesCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/deleteTransactionButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            app:srcCompat="@drawable/ic_delete_outline_24dp"
+                            app:tint="@color/colorAccent" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                    android:id="@+id/refreshShares"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/uifabricBackgroundColor">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <com.microsoft.officeuifabric.listitem.ListItemView
+                            android:id="@+id/total"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:subtitle="@{viewModel.transaction.payer.name}"
+                            app:title="@string/paid_by" />
+
+                        <include layout="@layout/divider" />
+
+                        <kudos26.bounty.list.Shares
+                            android:id="@+id/shares"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </kudos26.bounty.view.BottomSheetView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/editTransactionButton"
+            style="@style/FloatingActionButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/transactionPaidBy"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="18dp"
-                android:textAlignment="textStart"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="Paid By" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/transactionAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:padding="18dp"
-                android:textAlignment="textEnd"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                tools:text="Amount" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <include layout="@layout/divider_vertical" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true"
-            tools:listitem="@layout/item_share" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-</androidx.core.widget.NestedScrollView>
+            android:layout_gravity="bottom|end"
+            app:srcCompat="@drawable/ic_edit_24dp" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

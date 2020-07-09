@@ -1,270 +1,353 @@
 package kudos26.bounty.ui
 
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.google.firebase.database.DatabaseReference
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kudos26.bounty.core.ViewModel
+import kudos26.bounty.firebase.Extensions.admin
+import kudos26.bounty.firebase.Extensions.amount
+import kudos26.bounty.firebase.Extensions.archive
+import kudos26.bounty.firebase.Extensions.author
+import kudos26.bounty.firebase.Extensions.comment
+import kudos26.bounty.firebase.Extensions.currentMember
+import kudos26.bounty.firebase.Extensions.currentMembers
+import kudos26.bounty.firebase.Extensions.date
+import kudos26.bounty.firebase.Extensions.devices
+import kudos26.bounty.firebase.Extensions.email
+import kudos26.bounty.firebase.Extensions.formerMember
+import kudos26.bounty.firebase.Extensions.getValue
+import kudos26.bounty.firebase.Extensions.group
+import kudos26.bounty.firebase.Extensions.groups
+import kudos26.bounty.firebase.Extensions.impact
+import kudos26.bounty.firebase.Extensions.impactOn
+import kudos26.bounty.firebase.Extensions.invitation
+import kudos26.bounty.firebase.Extensions.invitations
+import kudos26.bounty.firebase.Extensions.inviter
+import kudos26.bounty.firebase.Extensions.isAdmin
+import kudos26.bounty.firebase.Extensions.joiningDate
+import kudos26.bounty.firebase.Extensions.name
+import kudos26.bounty.firebase.Extensions.newGroupId
+import kudos26.bounty.firebase.Extensions.newTransactionId
+import kudos26.bounty.firebase.Extensions.observeValue
+import kudos26.bounty.firebase.Extensions.payer
+import kudos26.bounty.firebase.Extensions.pendingInvite
+import kudos26.bounty.firebase.Extensions.since
+import kudos26.bounty.firebase.Extensions.transaction
+import kudos26.bounty.firebase.Extensions.transactions
+import kudos26.bounty.firebase.Extensions.upi
+import kudos26.bounty.firebase.Extensions.user
 import kudos26.bounty.source.model.*
-import kudos26.bounty.source.repository.FirebaseCloudMessagingRepository
-import kudos26.bounty.utils.getCurrentDate
-import kudos26.bounty.utils.toDisplayDate
+import kudos26.bounty.source.repository.NotificationsRepository
+import kudos26.bounty.utils.CalendarUtils.currentDate
+import kudos26.bounty.utils.Events
+import kudos26.bounty.utils.Extensions.Try
+import kudos26.bounty.utils.Extensions.default
 
 /**
  * Created by kunal on 06-02-2020.
  */
 
 class MainViewModel(
-        firebaseAuth: FirebaseAuth,
-        firebaseDatabase: FirebaseDatabase,
-        val firebaseCloudMessagingRepository: FirebaseCloudMessagingRepository
+        private val database: DatabaseReference,
+        private val notificationsRepository: NotificationsRepository
 ) : ViewModel() {
 
-    private val databaseReference = firebaseDatabase.reference
-    val uid = MutableLiveData<String>(firebaseAuth.currentUser?.uid)
-    val email = MutableLiveData<String>(firebaseAuth.currentUser?.email)
-    val displayName = MutableLiveData<String>(firebaseAuth.currentUser?.displayName)
+    val upi = MutableLiveData("")
+    val title = MutableLiveData("")
+    val subtitle = MutableLiveData("")
 
-    private val groupsCount = MutableLiveData<Int?>(null)
+    val group = MutableLiveData(Group())
+    val transaction = MutableLiveData(Transaction())
+
+    val dues = MutableLiveData<List<Due>>(emptyList())
     val groups = MutableLiveData<List<Group>>(emptyList())
-    val transactions = MutableLiveData<List<Transaction>>(emptyList())
-    val shares = MutableLiveData<Map<Share, Ratio>>(emptyMap())
-    val transaction = MutableLiveData<Transaction>(Transaction())
+    val archive = MutableLiveData<List<Group>>(emptyList())
     val members = MutableLiveData<List<Member>>(emptyList())
+    val invitations = MutableLiveData<List<Invitation>>(emptyList())
+    val transactions = MutableLiveData<List<Transaction>>(emptyList())
 
-    fun getNumberOfGroups() {
-        databaseReference.apply {
-            child("groups").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    groupsCount.value = if (dataSnapshot.exists()) {
-                        (dataSnapshot.value as List<*>).size
-                    } else {
-                        0
-                    }
-                }
+    fun getDisplayName() {
+        database.user(uid.value!!).name.observeValue({
+            Try { name.value = it.value as String }
+        })
+    }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    groupsCount.value = null
-                }
-            })
+    fun setDisplayName(name: String) {
+        database.user(uid.value!!).name.setValue(name).addOnSuccessListener {
+            this.name.value = name
+        }
+    }
+
+    fun getUpiAddress() {
+        database.user(uid.value!!).upi.observeValue({
+            Try { upi.value = it.value as String }
+        })
+    }
+
+    fun setUpiAddress(address: String) {
+        database.user(uid.value!!).upi.setValue(address).addOnSuccessListener {
+            upi.value = address
         }
     }
 
     fun createGroup(name: String) {
-        groupsCount.value?.toString()?.let { index ->
-            databaseReference.apply {
-                child("groups").child(index).child("created").apply {
-                    child("on").setValue(getCurrentDate())
-                    child("by").setValue(uid.value)
+        database.newGroupId?.let { groupId ->
+            database.user(uid.value!!).group(groupId).setValue(currentDate).addOnSuccessListener {
+                database.group(groupId).let { group ->
+                    group.name.setValue(name)
+                    group.author.setValue(uid.value)
+                    group.since.setValue(currentDate)
+                    group.currentMember(uid.value!!).admin.setValue(true)
+                    group.currentMember(uid.value!!).joiningDate.setValue(currentDate)
                 }
-                child("groups").child(index).child("name").setValue(name)
-                child("groups").child(index).child("members").child(uid.value!!).apply {
-                    child("name").setValue(displayName.value)
-                    child("doj").setValue(getCurrentDate())
-                    child("admin").setValue(true)
-                }
-                child("users").child(uid.value!!).child("groups").child(index).setValue(name)
             }
         }
     }
 
     fun getGroups() {
-        databaseReference.apply {
-            child("users").child(uid.value!!).child("groups").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    groups.value = if (dataSnapshot.exists()) {
-                        val groups = mutableListOf<Group>()
-                        for (group in dataSnapshot.children) {
-                            groups += Group(group.key!!, group.value as String)
+        database.user(uid.value!!).groups.observeValue({
+            when {
+                it.exists() -> default {
+                    groups.postValue(mutableListOf<Group>().apply {
+                        for (group in it.children) {
+                            this += Group(group.key!!)
                         }
-                        groups
-                    } else {
-                        emptyList()
-                    }
+                    })
                 }
+                else -> groups.value = emptyList()
+            }
+        }, { groups.value = emptyList() })
+    }
 
-                override fun onCancelled(databaseError: DatabaseError) {
-                    groups.value = emptyList()
-                }
-            })
+    fun joinGroup(invitation: Invitation) {
+        invitation.let {
+            database.user(uid.value!!).group(it.id).setValue(currentDate)
+            database.group(it.id).apply {
+                formerMember(uid.value!!).removeValue()
+                pendingInvite(uid.value!!).removeValue()
+                currentMember(uid.value!!).admin.setValue(false)
+                currentMember(uid.value!!).joiningDate.setValue(currentDate)
+            }
         }
+        declineInvitation(invitation)
+    }
+
+    fun declineInvitation(invitation: Invitation) {
+        database.user(uid.value!!).invitation(invitation.id).removeValue()
+        database.group(invitation.id).pendingInvite(uid.value!!).removeValue()
+    }
+
+    fun getArchivedGroups() {
+        database.user(uid.value!!).archive.observeValue({
+            when {
+                it.exists() -> default {
+                    archive.postValue(mutableListOf<Group>().apply {
+                        for (group in it.children) {
+                            this += Group(group.key!!)
+                        }
+                    })
+                }
+                else -> archive.value = emptyList()
+            }
+        }, { archive.value = emptyList() })
+    }
+
+    fun renameGroup(group: Group, name: String) {
+        database.group(group.id).name.setValue(name).addOnSuccessListener {
+            group.name = name
+            this.group.value = group
+        }
+    }
+
+    fun deleteGroup(group: Group) {
+        database.user(uid.value!!).archive(group.id).removeValue()
+        database.group(group.id).formerMember(uid.value!!).removeValue()
+    }
+
+    fun addTransaction(group: Group, transaction: Transaction) {
+        if (transaction.id.isBlank()) {
+            transaction.payer.uid = uid.value!!
+            transaction.id = database.group(group.id).newTransactionId!!
+        }
+        database.group(group.id).transaction(transaction.id).apply {
+            date.setValue(transaction.date)
+            amount.setValue(transaction.amount)
+            payer.setValue(transaction.payer.uid)
+            comment.setValue(transaction.comment)
+            transaction.impact.forEach {
+                impactOn(it.member.uid).setValue(it.percentage)
+            }
+        }
+
     }
 
     fun getTransactions(group: Group) {
-        databaseReference.apply {
-            child("groups").child(group.id).child("transactions").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    transactions.value = if (dataSnapshot.exists()) {
-                        val transactions = mutableListOf<Transaction>()
-                        for (transaction in dataSnapshot.children) {
-                            try {
-                                Transaction().let {
-                                    it.id = transaction.key!!
-                                    it.date = transaction.child("date").value as String
-                                    it.amount = (transaction.child("amount").value as Long).toInt()
-                                    it.comment = transaction.child("comment").value as String
-                                    it.from = transaction.child("from").value as String
-                                    for (ratio in transaction.child("to").children) {
-                                        Ratio().apply {
-                                            uid = ratio.key as String
-                                            percentage = try {
-                                                (ratio.value as Double)
-                                            } catch (classCastException: ClassCastException) {
-                                                (ratio.value as Long).toDouble()
-                                            }
-                                            it.to += this
-                                        }
+        database.group(group.id).transactions.observeValue({
+            when {
+                it.exists() -> default {
+                    transactions.postValue(mutableListOf<Transaction>().apply {
+                        for (transaction in it.children) Try {
+                            val temp = Transaction(
+                                    id = transaction.key!!,
+                                    date = transaction.date,
+                                    amount = transaction.amount,
+                                    comment = transaction.comment,
+                                    payer = Member(transaction.payer)
+                            )
+                            this += temp
+                        }
+                    })
+                }
+                else -> transactions.value = emptyList()
+            }
+        }, { transactions.value = emptyList() })
+    }
+
+    fun deleteTransaction(group: Group, transaction: Transaction) {
+        database.group(group.id).transaction(transaction.id).removeValue()
+    }
+
+    fun getDues(group: Group) {
+        database.group(group.id).transactions.observeValue({
+            when {
+                it.exists() -> default {
+                    dues.postValue(mutableListOf<Due>().apply {
+                        for (transaction in it.children) {
+                            for (impact in transaction.impact) {
+                                if (transaction.payer != impact.key) Try {
+                                    val exists = find { it.creditor.uid == transaction.payer && it.debtor.uid == impact.key }
+                                    val existsOtherwise = find { it.debtor.uid == transaction.payer && it.creditor.uid == impact.key }
+                                    when {
+                                        exists != null -> exists.amount += transaction.amount * impact.value as Long / 100
+                                        existsOtherwise != null -> existsOtherwise.amount -= transaction.amount * impact.value as Long / 100
+                                        else -> this += Due(
+                                                amount = transaction.amount * impact.value as Long / 100,
+                                                debtor = Member(impact.key!!),
+                                                creditor = Member(transaction.payer)
+                                        )
                                     }
-                                    transactions += it
                                 }
-                            } catch (typeCastException: TypeCastException) {
                             }
                         }
-                        transactions
-                    } else {
-                        emptyList()
-                    }
+                    })
                 }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    transactions.value = emptyList()
-                }
-            })
-        }
-    }
-
-    fun getShares(group: Group) {
-        databaseReference.apply {
-            child("groups").child(group.id).child("members").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    shares.value = if (dataSnapshot.exists()) {
-                        val shares = mutableMapOf<Share, Ratio>()
-                        dataSnapshot.children.forEach {
-                            val share = Share()
-                            val ratio = Ratio()
-                            share.amount = 0
-                            ratio.percentage = 0.0
-                            ratio.uid = it.key as String
-                            share.name = it.child("name").value as String
-                            shares[share] = ratio
-                        }
-                        shares
-                    } else {
-                        emptyMap()
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    shares.value = emptyMap()
-                }
-            })
-        }
-    }
-
-    fun addTransaction(group: Group) {
-        databaseReference.apply {
-            transaction.value?.let { transaction ->
-                if (transaction.id.isEmpty()) {
-                    transaction.id = transactions.value?.size.toString()
-                }
-                child("groups").child(group.id).child("transactions").child(transaction.id).apply {
-                    child("amount").setValue(transaction.amount)
-                    child("date").setValue(transaction.date)
-                    child("comment").setValue(transaction.comment)
-                    child("from").setValue(transaction.from)
-                    transaction.to.forEach {
-                        if (it.percentage != 0.0) {
-                            child("to").child(it.uid).setValue(it.percentage)
-                        } else {
-                            child("to").child(it.uid).setValue(null)
-                        }
-                    }
-                }
+                else -> dues.value = emptyList()
             }
-        }
-        Payload().apply {
-            notification.body = "New Transaction Added"
-            notification.title = group.name
-            sendNotification(this)
-        }
+        }, { dues.value = emptyList() })
+    }
+
+    fun getShares(group: Group, transaction: Transaction) {
+        database.group(group.id).currentMembers.observeValue({
+            when {
+                it.exists() -> default {
+                    transaction.impact = mutableListOf<Share>().apply {
+                        for (share in it.children) Try {
+                            this += Share(member = Member(share.key!!))
+                        }
+                        database.group(group.id).transaction(transaction.id).observeValue({
+                            for (share in it.impact) Try {
+                                val uid = share.key!!
+                                val percentage = (share.value as Long).toInt()
+                                val exists = this.find { it.member.uid == uid }
+                                if (exists != null) this.removeAt(this.indexOf(exists))
+                                this += Share(
+                                        member = Member(uid),
+                                        percentage = percentage,
+                                        amount = transaction.amount * percentage / 100
+                                )
+                            }
+                        })
+                    }
+                    this.transaction.postValue(transaction)
+                }
+                else -> this.transaction.value?.impact = emptyList()
+            }
+        }, { this.transaction.value?.impact = emptyList() })
     }
 
     fun getMembers(group: Group) {
-        databaseReference.apply {
-            child("groups").child(group.id).child("members").addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    members.value = if (dataSnapshot.exists()) {
-                        val members = mutableListOf<Member>()
-                        dataSnapshot.children.forEach {
-                            Member().apply {
-                                try {
-                                    uid = it.key as String
-                                    name = it.child("name").value as String
-                                    admin = it.child("admin").value as Boolean
-                                    doj = (it.child("doj").value as String).toDisplayDate()
-                                    members += this
-                                } catch (typeCastException: TypeCastException) {
-                                }
-                            }
+        database.group(group.id).currentMembers.observeValue({
+            when {
+                it.exists() -> default {
+                    members.postValue(mutableListOf<Member>().apply {
+                        for (member in it.children) Try {
+                            this += Member(
+                                    uid = member.key as String,
+                                    date = member.joiningDate,
+                                    isAdmin = member.isAdmin
+                            )
                         }
-                        members
-                    } else {
-                        emptyList()
-                    }
+                    })
                 }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    members.value = emptyList()
-                }
-            })
-        }
-    }
-
-    fun addMember(group: Group, email: String) {
-        databaseReference.apply {
-            child("users").orderByChild("email").equalTo(email).addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.children.count() == 1) {
-                        val uid = dataSnapshot.children.elementAt(0).key!!
-                        val name = dataSnapshot.children.elementAt(0).child("name").value
-                        child("groups").child(group.id).child("members").child(uid).apply {
-                            child("name").setValue(name)
-                            child("admin").setValue(false)
-                            child("doj").setValue(getCurrentDate())
-                        }
-                        child("users").child(uid).child("groups").child(group.id).setValue(group.name)
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-
-                }
-            })
-        }
-    }
-
-    private fun sendNotification(payload: Payload) {
-        members.value?.forEach {
-            if (it.uid != uid.value) {
-                databaseReference.child("users").child(it.uid).child("token").addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        Payload().apply {
-                            to = dataSnapshot.value as String
-                            notification = payload.notification
-                            disposeOnCleared(firebaseCloudMessagingRepository.sendNotification(this)
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe({}, {}))
-                        }
-                    }
-
-                    override fun onCancelled(databaseError: DatabaseError) {}
-                })
+                else -> members.value = emptyList()
             }
-        }
+        }, { members.value = emptyList() })
+    }
+
+    fun makeAdmin(group: Group, member: Member) {
+        database.group(group.id).currentMember(member.uid).admin.setValue(true)
+    }
+
+    fun leave(group: Group) = remove(group, Member(uid.value!!))
+
+    fun remove(group: Group, member: Member) {
+        database.user(member.uid).devices.getValue({
+            if (it.exists()) default {
+                for (device in it.children) {
+                    notify(Payload(
+                            to = device.value as String,
+                            data = group
+                    ))
+                }
+            }
+        })
+    }
+
+    fun invite(group: Group, member: Member) {
+        // TODO Check for existing member
+        // Current structure doesn't allows us to at all
+        database.email(member.email).getValue({
+            if (it.exists()) {
+                it.children.first().default {
+                    for (device in devices) Try {
+                        notify(Payload(
+                                to = device.value as String,
+                                data = Invitation(
+                                        id = group.id,
+                                        uid = uid.value!!,
+                                        date = currentDate
+                                )
+                        ))
+                    }
+                }
+            } else Events.publish(member)
+        })
+    }
+
+    fun getInvitations() {
+        database.user(uid.value!!).invitations.observeValue({
+            when {
+                it.exists() -> default {
+                    invitations.postValue(mutableListOf<Invitation>().apply {
+                        for (invitation in it.children) {
+                            this += Invitation(
+                                    id = invitation.key!!,
+                                    date = invitation.date,
+                                    uid = invitation.inviter
+                            )
+                        }
+                    })
+                }
+                else -> invitations.value = emptyList()
+            }
+        }, { invitations.value = emptyList() })
+    }
+
+    private fun notify(payload: Payload) {
+        disposeOnCleared(notificationsRepository.notify(payload)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({}, {}))
     }
 }

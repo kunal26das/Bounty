@@ -1,47 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <variable
+            name="buildConfig"
+            type="kudos26.bounty.BuildConfig" />
 
         <variable
             name="viewModel"
             type="kudos26.bounty.ui.MainViewModel" />
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="?attr/uifabricToolbarBackgroundColor">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/switchAccount"
+        <kudos26.bounty.view.BottomSheetView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="18dp">
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/bottom_sheet_behavior">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/signedInAs"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@{`Signed in as `+viewModel.displayName}"
-                android:textSize="16sp"
-                tools:text="Signed in as" />
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_google" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="8dp">
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/padding_global"
+                        android:text="@{viewModel.currentUser.email}" />
+                </com.google.android.material.card.MaterialCardView>
 
-        <include layout="@layout/divider_vertical" />
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?attr/uifabricBackgroundColor">
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <com.microsoft.officeuifabric.listitem.ListItemView
+                            android:id="@+id/displayName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:subtitle="@{viewModel.name}"
+                            app:title="@string/display_name" />
+
+                        <include layout="@layout/divider" />
+
+                        <com.microsoft.officeuifabric.listitem.ListItemView
+                            android:id="@+id/upiAddress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:subtitle="@{viewModel.upi}"
+                            app:title="@string/upi_address" />
+
+                        <include layout="@layout/divider" />
+
+                        <com.microsoft.officeuifabric.listitem.ListItemView
+                            android:id="@+id/version"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:subtitle="@{buildConfig.VERSION_NAME}"
+                            app:title="@string/version" />
+
+                        <include layout="@layout/divider" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.core.widget.NestedScrollView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </kudos26.bounty.view.BottomSheetView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -3,22 +3,6 @@
   -->
 
 <resources>
-    <color name="colorStatusBar">@color/colorBlack</color>
-    <color name="colorNavigationBar">@color/colorBlack</color>
-    <color name="colorWindowBackground">@color/colorBlack</color>
-
-    <color name="colorPrimary">#FACADE</color>
-    <color name="colorPrimaryVariant">#DECADE</color>
-    <color name="colorSecondary">#FACADE</color>
-    <color name="colorSecondaryVariant">#DECADE</color>
-
-    <color name="colorBackground">@color/colorBlack</color>
-    <color name="colorSurface">@color/colorBlack</color>
-    <color name="colorError">#CF6679</color>
-
-    <color name="colorOnPrimary">@color/colorBlack</color>
-    <color name="colorOnSecondary">@color/colorBlack</color>
-    <color name="colorOnBackground">@color/colorWhite</color>
-    <color name="colorOnSurface">@color/colorWhite</color>
-    <color name="colorOnError">@color/colorBlack</color>
+    <color name="colorInputBox">#303030</color>
+    <color name="colorAccent">#FFFFFF</color>
 </resources>

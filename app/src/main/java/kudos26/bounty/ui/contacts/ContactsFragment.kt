@@ -6,15 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_groups.*
+import com.microsoft.officeuifabric.persona.IPersona
+import com.microsoft.officeuifabric.persona.Persona
+import kotlinx.android.synthetic.main.fragment_contacts.*
 import kudos26.bounty.R
-import kudos26.bounty.adapter.ContactsAdapter
-import kudos26.bounty.adapter.OnContactClickListener
 import kudos26.bounty.core.Fragment
 import kudos26.bounty.source.model.Group
+import kudos26.bounty.source.model.Member
 import kudos26.bounty.ui.MainViewModel
+import kudos26.bounty.utils.Events
+import kudos26.bounty.utils.Extensions.default
+import kudos26.bounty.utils.Extensions.main
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 /**
@@ -24,8 +26,12 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 class ContactsFragment : Fragment() {
 
     private lateinit var group: Group
-    private val contactsAdapter = ContactsAdapter()
     override val viewModel by sharedViewModel<MainViewModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        group = arguments?.getParcelable(getString(R.string.group))!!
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_contacts, container, false)
@@ -33,44 +39,63 @@ class ContactsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        group = (arguments?.get("Group") as Group)
-
-        LinearLayoutManager(context).apply {
-            list.layoutManager = this
-            list.adapter = contactsAdapter
-            list.addItemDecoration(DividerItemDecoration(context, orientation))
+        personaList.setOnGroupClickListener {
+            viewModel.invite(group, Member(
+                    name = it.name,
+                    email = it.email
+            ))
+            findNavController().navigateUp()
         }
-
-        contactsAdapter.onContactClickListener = object : OnContactClickListener {
-            override fun onClick(email: String, position: Int) {
-                viewModel.addMember(group, email)
-                findNavController().navigateUp()
-            }
+        refreshContacts.setOnRefreshListener {
+            getContacts()
         }
-
-        contactsAdapter.contacts = getEmails()
     }
 
-    override fun initObservers() {}
+    override fun onResume() {
+        super.onResume()
+        getContacts()
+        viewModel.title.value = group.name
+        viewModel.subtitle.value = getString(R.string.invite_member)
+    }
 
-    private fun getEmails(): ArrayList<String> {
-        val emails = ArrayList<String>()
-        context?.contentResolver!!.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null)?.apply {
-            if (count > 0) {
-                while (moveToNext()) {
-                    val id: String = getString(getColumnIndex(ContactsContract.Contacts._ID))!!
-                    context?.contentResolver!!.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", arrayOf(id), null)?.apply {
-                        while (moveToNext()) {
-                            val email: String = getString(getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA))!!
-                            emails.add(email)
+    override fun initObservers() {
+        super.initObservers()
+        Events.subscribe(Group::class.java) {
+            if (it.id == group.id) {
+                findNavController().navigate(R.id.action_contacts_to_groups)
+            }
+        }
+    }
+
+    private fun getContacts() {
+        default {
+            val contacts = ArrayList<IPersona>()
+            context?.contentResolver?.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null)?.apply {
+                if (count > 0) {
+                    while (moveToNext()) {
+                        val id: String = getString(getColumnIndex(ContactsContract.Contacts._ID))!!
+                        context?.contentResolver!!.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", arrayOf(id), null)?.apply {
+                            while (moveToNext()) {
+                                contacts.add(Persona(
+                                        name = getString(getColumnIndex(ContactsContract.CommonDataKinds.Identity.DISPLAY_NAME)),
+                                        email = getString(getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA))
+                                ).apply { subtitle = email })
+                            }
+                            close()
                         }
-                        close()
                     }
                 }
+                close()
             }
-            close()
+            main {
+                personaList.submitList(contacts)
+                refreshContacts.isRefreshing = false
+                contactsCount.text = when (contacts.size) {
+                    0 -> getString(R.string.no_contacts)
+                    1 -> getString(R.string.one_contact)
+                    else -> "${contacts.size} Contacts"
+                }
+            }
         }
-        emails.sort()
-        return emails
     }
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="layout_behavior">kudos26.bounty.view.FabScrollAwareBehaviour</item>
+        <item name="android:layout_margin">@dimen/margin_global</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="tint">@android:color/white</item>
+        <item name="borderWidth">0dp</item>
+        <item name="fabSize">auto</item>
+    </style>
+</resources>

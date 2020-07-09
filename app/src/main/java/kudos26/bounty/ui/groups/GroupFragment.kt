@@ -1,119 +1,53 @@
 package kudos26.bounty.ui.groups
 
 import android.os.Bundle
-import android.view.*
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.MarginPageTransformer
 import kotlinx.android.synthetic.main.fragment_group.*
-import kotlinx.android.synthetic.main.toolbar.*
 import kudos26.bounty.R
-import kudos26.bounty.adapter.LoadingAdapter
-import kudos26.bounty.adapter.OnTransactionClickListener
-import kudos26.bounty.adapter.OnTransactionLongClickListener
-import kudos26.bounty.adapter.TransactionAdapter
 import kudos26.bounty.core.Fragment
-import kudos26.bounty.databinding.FragmentGroupBinding
 import kudos26.bounty.source.model.Group
-import kudos26.bounty.source.model.Transaction
 import kudos26.bounty.ui.MainViewModel
+import kudos26.bounty.ui.transactions.DuesFragment
+import kudos26.bounty.ui.transactions.TransactionsFragment
 import org.koin.android.viewmodel.ext.android.sharedViewModel
-
-/**
- * Created by kunal on 20-01-2020.
- */
 
 class GroupFragment : Fragment() {
 
+    private var archive = false
     private lateinit var group: Group
-    private val loadingAdapter = LoadingAdapter()
-    private val transactionAdapter = TransactionAdapter()
-    private lateinit var dataBinding: FragmentGroupBinding
     override val viewModel by sharedViewModel<MainViewModel>()
+    private var fragments = listOf(TransactionsFragment(), DuesFragment())
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        group = arguments?.getParcelable(getString(R.string.group))!!
+        archive = arguments?.getBoolean(getString(R.string.archive))!!
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
-        dataBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_group, container, false)
-        dataBinding.lifecycleOwner = viewLifecycleOwner
-        dataBinding.viewModel = viewModel
-        return dataBinding.root
+        return inflater.inflate(R.layout.fragment_group, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        group = (arguments?.get("Group") as Group)
-        activity?.toolbar?.title = group.name
+        viewPager2.setPageTransformer(MarginPageTransformer(resources.getDimension(R.dimen.margin_global).toInt()))
+    }
 
-        LinearLayoutManager(context).apply {
-            list.layoutManager = this
-            viewModel.getShares(group)
-            viewModel.getMembers(group)
-            viewModel.getTransactions(group)
-            list.addItemDecoration(DividerItemDecoration(context, orientation))
-            transactionAdapter.onTransactionClickListener = object : OnTransactionClickListener {
-                override fun onClick(transaction: Transaction, position: Int) {
-                    navigateToTransactionFragment(transaction)
+    override fun onResume() {
+        super.onResume()
+        viewPager2.adapter = object : FragmentStateAdapter(childFragmentManager, lifecycle) {
+            override fun getItemCount() = fragments.size
+            override fun createFragment(position: Int): Fragment {
+                fragments[position].arguments = Bundle().apply {
+                    putParcelable(getString(R.string.group), group)
+                    putBoolean(getString(R.string.archive), archive)
                 }
+                return fragments[position]
             }
-            transactionAdapter.onTransactionLongClickListener = object : OnTransactionLongClickListener {
-                override fun onLongClick(transaction: Transaction, position: Int) {
-
-                }
-            }
-        }
-    }
-
-    override fun initObservers() {
-        viewModel.transactions.observe(this, Observer {
-            list?.adapter = if (it.isNotEmpty()) {
-                totalAmount?.text = "₹${transactionAdapter.getTotalAmount()}"
-                transactionAdapter.transactions = it
-                transactionAdapter
-            } else {
-                loadingAdapter
-            }
-        })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        return inflater.inflate(R.menu.menu_group, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.add -> {
-                navigateToAddTransactionFragment()
-                true
-            }
-            R.id.settings -> {
-                navigateToParticipantsFragment()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun navigateToParticipantsFragment() {
-        Bundle().apply {
-            putParcelable("Group", group)
-            findNavController().navigate(R.id.action_group_to_group_settings, this)
-        }
-    }
-
-    private fun navigateToAddTransactionFragment() {
-        Bundle().apply {
-            putParcelable("Group", group)
-            findNavController().navigate(R.id.action_group_to_addTransaction, this)
-        }
-    }
-
-    private fun navigateToTransactionFragment(transaction: Transaction) {
-        Bundle().apply {
-            putParcelable("Group", group)
-            putParcelable("Transaction", transaction)
-            findNavController().navigate(R.id.action_group_to_transaction, this)
         }
     }
 }

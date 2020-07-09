@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<resources>
+    <item name="accept" type="id" />
+
+    <item name="admin" type="id" />
+
+    <item name="delete" type="id" />
+
+    <item name="remove" type="id" />
+</resources>

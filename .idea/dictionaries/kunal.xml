@@ -4,9 +4,17 @@
       <w>admob</w>
       <w>crashlytics</w>
       <w>firebase</w>
+      <w>gson</w>
       <w>koin</w>
+      <w>kunal</w>
       <w>leakcanary</w>
+      <w>raleway</w>
+      <w>searchbar</w>
+      <w>snackbar</w>
       <w>squareup</w>
+      <w>stetho</w>
+      <w>uifabric</w>
+      <w>unelevated</w>
     </words>
   </dictionary>
 </component>

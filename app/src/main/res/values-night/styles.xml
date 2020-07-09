@@ -1,45 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) Microsoft Corporation. All rights reserved.
+  ~ Licensed under the MIT License.
+  -->
+
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="isLightTheme">false</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
-
-        <item name="android:statusBarColor">@color/colorStatusBar</item>
-        <item name="android:navigationBarColor">@color/colorNavigationBar</item>
-        <item name="android:windowBackground">@color/colorWindowBackground</item>
-
-        <item name="android:fontFamily">@font/product_sans_regular</item>
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
-        <item name="colorSecondary">@color/colorSecondary</item>
-        <item name="colorOnSecondary">@color/colorOnSecondary</item>
-        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
-        <item name="colorSurface">@color/colorSurface</item>
-        <item name="colorOnSurface">@color/colorOnSurface</item>
-        <item name="colorError">@color/colorError</item>
-        <item name="colorOnError">@color/colorOnError</item>
-        <item name="android:colorBackground">@color/colorBackground</item>
-        <item name="colorOnBackground">@color/colorOnBackground</item>
-
-        <item name="android:windowContentTransitions">true</item>
+    <style name="AppTheme" parent="Base.AppTheme">
+        <item name="android:statusBarColor">?attr/uifabricBackgroundSecondaryColor</item>
     </style>
 
-    <style name="SplashScreen" parent="AppTheme">
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:background">@drawable/splash_screen</item>
-        <item name="android:windowBackground">@color/colorBackground</item>
+    <style name="AppTheme.Neutral" parent="Base.AppTheme.Neutral">
+        <item name="android:statusBarColor">?attr/uifabricBackgroundSecondaryColor</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
     </style>
 
-    <style name="ToolbarTheme">
-        <item name="android:background">@color/colorBackground</item>
-        <item name="android:backgroundTint">@color/colorBackground</item>
-        <item name="android:textColorPrimary">@color/colorMedium</item>
-        <item name="android:textColorSecondary">@color/colorMedium</item>
-        <item name="android:fontFamily">@font/product_sans_medium</item>
+    <!--Launch Screen: This theme sets the launch screen for the app-->
+    <style name="AppTheme.Launcher" parent="Base.AppTheme.Launcher">
+        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
     </style>
+
+    <!--Tooltip Demo-->
+    <style name="Demo.Tooltip.Button" parent="Widget.UIFabric.Button.Borderless" />
 
 </resources>

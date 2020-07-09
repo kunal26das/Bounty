@@ -1,6 +1,6 @@
 package kudos26.bounty.koin
 
-import kudos26.bounty.source.repository.FirebaseCloudMessagingRepository
+import kudos26.bounty.source.repository.NotificationsRepository
 import org.koin.dsl.module
 
 /**
@@ -8,5 +8,5 @@ import org.koin.dsl.module
  */
 
 val repositories = module {
-    single { FirebaseCloudMessagingRepository(get()) }
+    single { NotificationsRepository(get()) }
 }

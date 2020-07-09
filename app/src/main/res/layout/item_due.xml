@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/debtorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:padding="8dp"
+            android:textAlignment="textStart"
+            android:textSize="16sp"
+            tools:text="Debtor" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            app:srcCompat="@drawable/ic_arrow_right_alt_24dp"
+            app:tint="?attr/uifabricToolbarBackgroundColor" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/creditorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:padding="8dp"
+            android:textAlignment="textStart"
+            android:textSize="16sp"
+            tools:text="Creditor" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/amountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lines="1"
+            android:padding="8dp"
+            android:textAlignment="textEnd"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            tools:text="$9999999999" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

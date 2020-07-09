@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_global">16dp</dimen>
+    <dimen name="padding_global">16dp</dimen>
+    <dimen name="margin_global_negative">-16dp</dimen>
+</resources>

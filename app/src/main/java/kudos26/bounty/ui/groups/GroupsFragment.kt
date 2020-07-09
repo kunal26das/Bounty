@@ -4,22 +4,16 @@ import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import kotlinx.android.synthetic.main.fragment_groups.*
 import kudos26.bounty.R
-import kudos26.bounty.adapter.GroupAdapter
-import kudos26.bounty.adapter.LoadingAdapter
-import kudos26.bounty.adapter.OnGroupClickListener
 import kudos26.bounty.core.Fragment
-import kudos26.bounty.source.model.Group
 import kudos26.bounty.ui.MainViewModel
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class GroupsFragment : Fragment() {
 
-    private val groupsAdapter = GroupAdapter()
-    private val loadingAdapter = LoadingAdapter()
     override val viewModel by sharedViewModel<MainViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,65 +23,72 @@ class GroupsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        LinearLayoutManager(context).apply {
-            viewModel.getGroups()
-            list.layoutManager = this
-            list.addItemDecoration(DividerItemDecoration(context, orientation))
-            groupsAdapter.onGroupClickListener = object : OnGroupClickListener {
-                override fun onClick(group: Group, position: Int) {
-                    Bundle().apply {
-                        putParcelable("Group", group)
-                        findNavController().navigate(R.id.action_home_to_group, this)
-                    }
+        addGroupButton.setOnClickListener {
+            MaterialDialog(requireContext()).show {
+                input(
+                        maxLength = 25,
+                        allowEmpty = false,
+                        hintRes = R.string.group_name
+                ) { dialog, name ->
+                    viewModel.createGroup(name.toString())
+                    dialog.dismiss()
                 }
+                negativeButton { dismiss() }
+                positiveButton(R.string.create)
             }
+        }
+        groups.setOnGroupClickListener {
+            Bundle().apply {
+                putParcelable(getString(R.string.group), it)
+                putBoolean(getString(R.string.archive), false)
+                findNavController().navigate(R.id.action_groups_to_group, this)
+            }
+        }
+        refreshGroups.setOnRefreshListener {
+            viewModel.getGroups()
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getGroups()
+        viewModel.title.value = getString(R.string.beta)
+    }
+
     override fun initObservers() {
+        super.initObservers()
         viewModel.groups.observe(this, Observer {
-            list.adapter = if (it.isNotEmpty()) {
-                groupsAdapter.groups = it
-                groupsAdapter
-            } else {
-                loadingAdapter
+            groupsCount.text = when (it.size) {
+                0 -> "No Groups"
+                1 -> "1 Group"
+                else -> "${it.size} Groups"
             }
+            refreshGroups.isRefreshing = false
+            groups.submitList(it)
         })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        return inflater.inflate(R.menu.menu_groups, menu)
+        inflater.inflate(R.menu.menu_groups, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.add -> {
-                findNavController().navigate(R.id.action_home_to_addGroup)
-//                displayCreateGroupDialog()
+            R.id.invitations -> {
+                findNavController().navigate(R.id.action_groups_to_invitations)
+                true
+            }
+            R.id.archive -> {
+                findNavController().navigate(R.id.action_groups_to_archive)
                 true
             }
             R.id.settings -> {
-                findNavController().navigate(R.id.action_home_to_settings)
+                findNavController().navigate(R.id.action_groups_to_settings)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    /*private fun displayCreateGroupDialog() {
-        val groupNameEditText = TextInputEditText(context!!)
-        MaterialAlertDialogBuilder(context).apply {
-            setTitle("Enter Group name")
-            setView(groupNameEditText)
-            setPositiveButton("Create") { dialog, _ ->
-                val groupName = groupNameEditText.text.toString()
-                dialog.dismiss()
-            }
-            setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
-            show()
-        }
-    }*/
 
 }
