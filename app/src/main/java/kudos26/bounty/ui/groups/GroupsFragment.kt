@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.fragment_groups.*
 import kudos26.bounty.R
 import kudos26.bounty.core.Fragment
 import kudos26.bounty.ui.MainViewModel
+import kudos26.bounty.utils.Extensions.Try
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 class GroupsFragment : Fragment() {
@@ -30,12 +31,17 @@ class GroupsFragment : Fragment() {
                         allowEmpty = false,
                         hintRes = R.string.group_name
                 ) { dialog, name ->
-                    viewModel.createGroup(name.toString())
+                    Try {
+                        if (viewModel.groups.value?.size!! < 10) {
+                            viewModel.createGroup(name.toString())
+                        }
+                    }
                     dialog.dismiss()
                 }
                 negativeButton { dismiss() }
                 positiveButton(R.string.create)
             }
+
         }
         groups.setOnGroupClickListener {
             Bundle().apply {
@@ -59,8 +65,8 @@ class GroupsFragment : Fragment() {
         super.initObservers()
         viewModel.groups.observe(this, Observer {
             groupsCount.text = when (it.size) {
-                0 -> "No Groups"
-                1 -> "1 Group"
+                0 -> getString(R.string.no_groups)
+                1 -> getString(R.string.one_group)
                 else -> "${it.size} Groups"
             }
             refreshGroups.isRefreshing = false

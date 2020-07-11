@@ -1,8 +1,11 @@
 package kudos26.bounty.ui.groups
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -30,8 +33,8 @@ import org.koin.android.viewmodel.ext.android.sharedViewModel
 class GroupSettingsFragment : Fragment() {
 
     private lateinit var group: Group
-    override val viewModel by sharedViewModel<MainViewModel>()
     private lateinit var dataBinding: FragmentGroupSettingsBinding
+    override val viewModel by sharedViewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,13 +54,13 @@ class GroupSettingsFragment : Fragment() {
         addMemberButton.setOnClickListener {
             when (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS)) {
                 PackageManager.PERMISSION_GRANTED -> {
-                    Bundle().apply {
-                        putParcelable(getString(R.string.group), group)
-                        findNavController().navigate(R.id.action_group_settings_to_contacts, this)
-                    }
+                    onAddMemberClickListener()
                 }
                 PackageManager.PERMISSION_DENIED -> {
-                    // TODO Request Permission
+                    requestPermissions(
+                            arrayOf(Manifest.permission.READ_CONTACTS),
+                            PERMISSION_REQUEST_CODE
+                    )
                 }
             }
         }
@@ -66,12 +69,52 @@ class GroupSettingsFragment : Fragment() {
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            PERMISSION_REQUEST_CODE -> {
+                permissions.forEachIndexed { index, permission ->
+                    when (permission) {
+                        Manifest.permission.READ_CONTACTS -> {
+                            when (grantResults[index]) {
+                                PackageManager.PERMISSION_GRANTED -> {
+                                    onAddMemberClickListener()
+                                }
+                                PackageManager.PERMISSION_DENIED -> {
+                                    Snackbar.make(root, getString(R.string.permission_denied), Snackbar.LENGTH_LONG).apply {
+                                        setAction(getString(R.string.change), View.OnClickListener {
+                                            startApplicationSettings()
+                                        })
+                                    }.show()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onAddMemberClickListener() {
+        Bundle().apply {
+            putParcelable(getString(R.string.group), group)
+            findNavController().navigate(R.id.action_group_settings_to_contacts, this)
+        }
+    }
+
+    private fun startApplicationSettings() {
+        Intent().apply {
+            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            data = Uri.fromParts(getString(R.string.scheme_package), requireContext().packageName, null)
+            startActivity(this)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         viewModel.getMembers(group)
         viewModel.group.value = group
         viewModel.title.value = group.name
-        viewModel.subtitle.value = "Settings"
+        viewModel.subtitle.value = getString(R.string.settings)
     }
 
     override fun initObservers() {
@@ -79,8 +122,8 @@ class GroupSettingsFragment : Fragment() {
         viewModel.members.observe(this, Observer {
             members.submitList(it)
             groupName.text = when (it.size) {
-                0 -> "No Members"
-                1 -> "1 Member"
+                0 -> getString(R.string.no_members)
+                1 -> getString(R.string.one_member)
                 else -> "${it.size} Members"
             }
             refreshMembers.isRefreshing = false
@@ -167,6 +210,10 @@ class GroupSettingsFragment : Fragment() {
         super.onDestroyView()
         viewModel.group.value = Group()
         viewModel.members.value = emptyList()
+    }
+
+    companion object {
+        const val PERMISSION_REQUEST_CODE = 101
     }
 
 }

@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.auth.FirebaseUser
 import kudos26.bounty.R
 import kudos26.bounty.core.Activity
 import kudos26.bounty.firebase.Firebase
@@ -26,15 +27,18 @@ class SplashScreen : Activity() {
         if (!resumeApplication()) {
             createNotificationChannel(Channel(R.string.group, getString(R.string.group)))
             createNotificationChannel(Channel(R.string.invitations, getString(R.string.invitations)))
-            viewModel.currentUser.observe(this, Observer {
-                when (it) {
-                    null -> startActivityForResult(googleSignInClient.signInIntent, GOOGLE_SIGN_IN)
-                    else -> {
-                        Firebase.initialize(this)
-                        Intent(this, MainActivity::class.java).apply {
-                            viewModel.updateCurrentUser()
-                            startActivity(this)
-                            finish()
+            viewModel.currentUser.observe(this, object : Observer<FirebaseUser?> {
+                override fun onChanged(it: FirebaseUser?) {
+                    when (it) {
+                        null -> startActivityForResult(googleSignInClient.signInIntent, GOOGLE_SIGN_IN)
+                        else -> {
+                            Firebase.initialize(this@SplashScreen)
+                            viewModel.currentUser.removeObserver(this)
+                            Intent(baseContext, MainActivity::class.java).apply {
+                                viewModel.updateCurrentUser()
+                                startActivity(this)
+                                finish()
+                            }
                         }
                     }
                 }

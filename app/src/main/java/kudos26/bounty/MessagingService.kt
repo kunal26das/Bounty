@@ -83,8 +83,8 @@ class MessagingService : FirebaseMessagingService() {
                 }
                 // Group Removal
                 is Group -> {
+                    Events.publish(data)
                     firebaseAuth.currentUser?.uid?.let { uid ->
-                        Events.publish(data)
                         database.user(uid).group(data.id).removeValue()
                         database.group(data.id).currentMember(uid).removeValue()
                         database.user(uid).archivedGroup(data.id).setValue(currentDate)

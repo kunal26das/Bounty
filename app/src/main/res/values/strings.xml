@@ -61,6 +61,8 @@
 
     <string name="invitations">Invitations</string>
 
+    <string name="invite_member">Invite Member</string>
+
     <string name="invites">Invites</string>
 
     <string name="leave">Leave</string>
@@ -72,17 +74,28 @@
 
     <string name="new_group_invitation">New Group Invitation</string>
 
+    <string name="no_contacts">No Contacts</string>
+    <string name="no_dues">No Dues</string>
+    <string name="no_groups">No Groups</string>
     <string name="no_invitations">No Invitations</string>
+    <string name="no_members">No Members</string>
+    <string name="no_transactions">No Transactions</string>
 
     <string name="not_signed_up_yet">Not signed up yet</string>
 
+    <string name="one_contact">1 Contact</string>
+    <string name="one_group">1 Group</string>
     <string name="one_invitation">1 Invitation</string>
+    <string name="one_member">1 Member</string>
+    <string name="one_transaction">1 Transaction</string>
 
     <string name="paid_by">Paid by</string>
 
     <string name="payer">Payer</string>
 
     <string name="personal">Personal</string>
+
+    <string name="reimbursement">Reimbursement</string>
 
     <string name="remove">Remove</string>
 
@@ -98,15 +111,11 @@
 
     <string name="upi_address">Upi Address</string>
 
+    <string name="uri_upi_pay">upi://pay</string>
+
     <string name="version">Version</string>
 
     <string name="you_have_a_pending_group_invitation">You have a pending group invitation</string>
-    <string name="no_transactions">No Transactions</string>
-    <string name="one_transaction">1 Transaction</string>
-    <string name="reimbursement">Reimbursement</string>
-    <string name="uri_upi_pay">upi://pay</string>
-    <string name="no_dues">No Dues</string>
-    <string name="no_contacts">No Contacts</string>
-    <string name="one_contact">1 Contact</string>
-    <string name="invite_member">Invite Member</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="scheme_package">package</string>
 </resources>
