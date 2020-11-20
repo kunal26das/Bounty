@@ -3,6 +3,7 @@ package kudos26.bounty
 import android.app.NotificationManager
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import androidx.essentials.events.Events
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.google.android.gms.ads.MobileAds
@@ -53,6 +54,11 @@ class Application : MultiDexApplication() {
             modules(listOf(networking))
             modules(listOf(firebase))
         }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        Events.clear()
     }
 
 }

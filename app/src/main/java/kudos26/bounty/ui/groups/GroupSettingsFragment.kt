@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.essentials.events.Events
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.afollestad.materialdialogs.MaterialDialog
@@ -21,7 +22,6 @@ import kudos26.bounty.databinding.FragmentGroupSettingsBinding
 import kudos26.bounty.source.model.Group
 import kudos26.bounty.source.model.Member
 import kudos26.bounty.ui.MainViewModel
-import kudos26.bounty.utils.Events
 import kudos26.bounty.utils.Extensions.default
 import kudos26.bounty.utils.Extensions.main
 import org.koin.android.viewmodel.ext.android.sharedViewModel

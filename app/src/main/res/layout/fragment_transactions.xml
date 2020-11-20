@@ -12,14 +12,14 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/uifabricToolbarBackgroundColor">
+        android:layout_height="match_parent">
 
-        <kudos26.bounty.view.BottomSheetView
+        <androidx.essentials.backdrop.BottomSheetView
             android:id="@+id/transactionsSheet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/bottom_sheet_behavior">
+            app:cardCornerRadius="@dimen/radius_global"
+            app:cardElevation="0dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                         android:layout_height="match_parent" />
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </kudos26.bounty.view.BottomSheetView>
+        </androidx.essentials.backdrop.BottomSheetView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addTransactionButton"

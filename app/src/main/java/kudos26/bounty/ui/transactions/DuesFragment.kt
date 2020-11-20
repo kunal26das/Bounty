@@ -4,10 +4,9 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
+import androidx.essentials.events.Events
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_dues.*
@@ -17,7 +16,6 @@ import kudos26.bounty.databinding.FragmentDuesBinding
 import kudos26.bounty.source.model.*
 import kudos26.bounty.ui.MainViewModel
 import kudos26.bounty.utils.CalendarUtils.currentDate
-import kudos26.bounty.utils.Events
 import kudos26.bounty.utils.Extensions.Try
 import kudos26.bounty.utils.Extensions.default
 import kudos26.bounty.utils.Extensions.main
@@ -104,13 +102,33 @@ class DuesFragment : Fragment() {
             val creditor = data.data?.getQueryParameter("uid")!!
             viewModel.addTransaction(group, Transaction(
                     date = currentDate,
-                    amount = amount,
-                    comment = getString(R.string.reimbursement),
-                    impact = listOf(Share(
-                            member = Member(creditor),
-                            percentage = 100
-                    ))
+                amount = amount,
+                comment = getString(R.string.reimbursement),
+                impact = listOf(Share(
+                    member = Member(creditor),
+                    percentage = 100
+                ))
             ))
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        if (!archive) {
+            inflater.inflate(R.menu.menu_settings, menu)
+            super.onCreateOptionsMenu(menu, inflater)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.settings -> {
+                Bundle().apply {
+                    putParcelable(getString(R.string.group), group)
+                    findNavController().navigate(R.id.action_group_to_group_settings, this)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

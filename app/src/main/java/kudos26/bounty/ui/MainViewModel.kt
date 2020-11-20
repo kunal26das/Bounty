@@ -1,5 +1,6 @@
 package kudos26.bounty.ui
 
+import androidx.essentials.events.Events
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.DatabaseReference
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -40,7 +41,6 @@ import kudos26.bounty.firebase.Extensions.user
 import kudos26.bounty.source.model.*
 import kudos26.bounty.source.repository.NotificationsRepository
 import kudos26.bounty.utils.CalendarUtils.currentDate
-import kudos26.bounty.utils.Events
 import kudos26.bounty.utils.Extensions.Try
 import kudos26.bounty.utils.Extensions.default
 
@@ -56,6 +56,7 @@ class MainViewModel(
     val upi = MutableLiveData("")
     val title = MutableLiveData("")
     val subtitle = MutableLiveData("")
+    val viewPager2Position = MutableLiveData(0)
 
     val group = MutableLiveData(Group())
     val transaction = MutableLiveData(Transaction())

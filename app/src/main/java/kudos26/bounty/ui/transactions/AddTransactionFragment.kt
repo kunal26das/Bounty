@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.databinding.DataBindingUtil
+import androidx.essentials.events.Events
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.ads.AdRequest
@@ -22,7 +23,6 @@ import kudos26.bounty.source.model.Transaction
 import kudos26.bounty.ui.MainViewModel
 import kudos26.bounty.utils.CalendarUtils.date
 import kudos26.bounty.utils.CalendarUtils.simpleDateFormat
-import kudos26.bounty.utils.Events
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 import java.util.*
 

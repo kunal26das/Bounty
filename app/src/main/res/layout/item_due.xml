@@ -6,10 +6,9 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="8dp">
+        android:padding="16dp">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/debtorTextView"
@@ -17,7 +16,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:padding="8dp"
             android:textAlignment="textStart"
             android:textSize="16sp"
             tools:text="Debtor" />
@@ -25,6 +23,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="8dp"
             android:paddingTop="4dp"
             app:srcCompat="@drawable/ic_arrow_right_alt_24dp"
             app:tint="?attr/uifabricToolbarBackgroundColor" />
@@ -35,7 +34,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
-            android:padding="8dp"
             android:textAlignment="textStart"
             android:textSize="16sp"
             tools:text="Creditor" />
@@ -46,10 +44,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:lines="1"
-            android:padding="8dp"
+            android:paddingHorizontal="8dp"
             android:textAlignment="textEnd"
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             tools:text="$9999999999" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popupMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingTop="4dp"
+            app:srcCompat="@drawable/ic_more_vert_24dp"
+            app:tint="?attr/uifabricToolbarBackgroundColor" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

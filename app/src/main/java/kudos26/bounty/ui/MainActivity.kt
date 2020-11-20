@@ -18,10 +18,10 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainActivity : Activity(), NavController.OnDestinationChangedListener {
 
-    private val navigationSet = setOf(R.id.groups)
     private lateinit var navController: NavController
-    override val viewModel by viewModel<MainViewModel>()
+    private val navigationSet = setOf(R.id.groups)
     private lateinit var appBarConfiguration: AppBarConfiguration
+    override val viewModel by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

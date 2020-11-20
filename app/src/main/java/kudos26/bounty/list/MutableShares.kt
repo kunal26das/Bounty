@@ -77,10 +77,11 @@ class MutableShares(
 
         fun divideEqually() = Try {
             val share = sum / itemCount
+            val percentage = 100 / itemCount
             default {
                 currentList.forEach {
                     it.amount = share
-                    it.percentage = 100 / itemCount
+                    it.percentage = percentage
                 }
                 main { notifyDataSetChanged() }
             }

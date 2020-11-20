@@ -1,10 +1,12 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: "androidx.navigation.safeargs.kotlin"
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'androidx.navigation.safeargs.kotlin'
+}
 
 android {
     compileSdkVersion 30
@@ -19,8 +21,8 @@ android {
     buildTypes {
         release {
             debuggable false
-            minifyEnabled false
-            shrinkResources false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -46,70 +48,94 @@ android {
 dependencies {
     // Defaults
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
-    // 3rd Party
-    implementation 'com.afollestad.material-dialogs:input:3.3.0'
+    // Jetpack
+    dependencies {
+        // Core
+        implementation 'androidx.core:core-ktx:1.3.2'
+        implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    // AndroidX
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+        // Layouts
+        implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+        implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-    // Firebase
-    implementation 'com.google.firebase:firebase-ads:19.2.0'
-    implementation 'com.google.firebase:firebase-auth:19.3.1'
-    implementation 'com.google.firebase:firebase-core:17.4.3'
-    implementation 'com.google.firebase:firebase-perf:19.0.7'
-    implementation 'com.google.firebase:firebase-database:19.3.1'
-    implementation 'com.google.firebase:firebase-analytics:17.4.3'
-    implementation 'com.google.firebase:firebase-messaging:20.2.1'
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
-    implementation 'com.google.firebase:firebase-firestore-ktx:21.4.3'
+        // MultiDex
+        implementation "androidx.multidex:multidex:2.0.1"
 
-    // Google Play Services
-    implementation 'com.google.android.gms:play-services-ads:19.2.0'
-    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+        // Navigation
+        implementation 'androidx.navigation:navigation-ui-ktx:2.3.1'
+        implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'
+
+        // User Interface
+        implementation 'androidx.ui:ui-layout:0.1.0-dev14'
+        implementation 'androidx.ui:ui-material:0.1.0-dev14'
+        implementation 'androidx.ui:ui-tooling:0.1.0-dev14'
+
+        // Essentials
+        implementation 'androidx.essentials:core:1.0.3'
+        implementation 'androidx.essentials:events:1.0.1'
+        implementation 'androidx.essentials:backdrop:1.0.1'
+    }
+
+    // Google
+    dependencies {
+        // Firebase
+        implementation platform('com.google.firebase:firebase-bom:26.1.0')
+        implementation 'com.google.firebase:firebase-ads'
+        implementation 'com.google.firebase:firebase-analytics-ktx'
+        implementation 'com.google.firebase:firebase-auth-ktx'
+        implementation 'com.google.firebase:firebase-crashlytics-ktx'
+        implementation 'com.google.firebase:firebase-core'
+        implementation 'com.google.firebase:firebase-database-ktx'
+        implementation 'com.google.firebase:firebase-messaging-ktx'
+        implementation 'com.google.firebase:firebase-perf-ktx'
+
+        // Material Design
+        implementation 'com.google.android.material:material:1.3.0-alpha03'
+
+        // Play Services
+        implementation 'com.google.android.gms:play-services-ads:19.5.0'
+        implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    }
+
+    // Facebook
+    dependencies {
+        // Shimmer
+        implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+        // Stetho
+        implementation 'com.facebook.stetho:stetho:1.5.1'
+        implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+    }
+
+    // Microsoft
+    dependencies {
+        implementation 'com.microsoft.uifabric:OfficeUIFabric:0.3.9'
+    }
+
+    // Square
+    dependencies {
+        // Leak Canary
+        debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+
+        // Retrofit
+        implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+        implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+        implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    }
 
     // Koin
     implementation "org.koin:koin-android:$koin_version"
     implementation "org.koin:koin-android-viewmodel:$koin_version"
 
-    // Kotlin
-    implementation 'androidx.core:core-ktx:1.3.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    // Layouts
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-
-    // Leak Canary
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.1'
-
-    // Material Design
-    implementation 'com.google.android.material:material:1.3.0-alpha01'
-
-    // Microsoft
-    implementation 'com.microsoft.uifabric:OfficeUIFabric:0.3.7'
-
-    // MultiDex
-    implementation "androidx.multidex:multidex:2.0.1"
-
-    // Navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
-
     // ReactiveX
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
 
-    // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-
-    // Shimmer
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
-
-    // Stetho
-    implementation 'com.facebook.stetho:stetho:1.5.1'
-    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+    // 3rd Party
+    dependencies {
+        implementation 'com.afollestad.material-dialogs:input:3.3.0'
+    }
 
 }

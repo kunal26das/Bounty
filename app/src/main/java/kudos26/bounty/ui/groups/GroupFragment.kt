@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.synthetic.main.fragment_group.*
 import kudos26.bounty.R
 import kudos26.bounty.core.Fragment
@@ -35,19 +36,26 @@ class GroupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewPager2.setPageTransformer(MarginPageTransformer(resources.getDimension(R.dimen.margin_global).toInt()))
-    }
-
-    override fun onResume() {
-        super.onResume()
         viewPager2.adapter = object : FragmentStateAdapter(childFragmentManager, lifecycle) {
             override fun getItemCount() = fragments.size
             override fun createFragment(position: Int): Fragment {
                 fragments[position].arguments = Bundle().apply {
-                    putParcelable(getString(R.string.group), group)
                     putBoolean(getString(R.string.archive), archive)
+                    putParcelable(getString(R.string.group), group)
                 }
                 return fragments[position]
             }
         }
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                viewModel.viewPager2Position.value = position
+            }
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewPager2.currentItem = viewModel.viewPager2Position.value ?: 0
     }
 }

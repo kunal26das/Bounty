@@ -3,6 +3,7 @@ package kudos26.bounty.ui.transactions
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
+import androidx.essentials.events.Events
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.microsoft.officeuifabric.snackbar.Snackbar
@@ -12,7 +13,6 @@ import kudos26.bounty.core.Fragment
 import kudos26.bounty.databinding.FragmentTransactionsBinding
 import kudos26.bounty.source.model.Group
 import kudos26.bounty.ui.MainViewModel
-import kudos26.bounty.utils.Events
 import org.koin.android.viewmodel.ext.android.sharedViewModel
 
 /**

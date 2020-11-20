@@ -5,6 +5,7 @@ import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.essentials.events.Events
 import androidx.navigation.fragment.findNavController
 import com.microsoft.officeuifabric.persona.IPersona
 import com.microsoft.officeuifabric.persona.Persona
@@ -14,7 +15,6 @@ import kudos26.bounty.core.Fragment
 import kudos26.bounty.source.model.Group
 import kudos26.bounty.source.model.Member
 import kudos26.bounty.ui.MainViewModel
-import kudos26.bounty.utils.Events
 import kudos26.bounty.utils.Extensions.default
 import kudos26.bounty.utils.Extensions.main
 import org.koin.android.viewmodel.ext.android.sharedViewModel

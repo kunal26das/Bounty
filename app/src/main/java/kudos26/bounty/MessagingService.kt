@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.os.Bundle
 import androidx.core.app.NotificationCompat
+import androidx.essentials.events.Events
 import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -31,13 +32,11 @@ import kudos26.bounty.source.model.Invitation
 import kudos26.bounty.source.model.Notification
 import kudos26.bounty.ui.MainActivity
 import kudos26.bounty.utils.CalendarUtils.currentDate
-import kudos26.bounty.utils.Events
 import kudos26.bounty.utils.Extensions.Try
 import org.koin.android.ext.android.inject
 
 /**
  * Created by kunal on 17-12-2019.
- *
  * */
 
 class MessagingService : FirebaseMessagingService() {

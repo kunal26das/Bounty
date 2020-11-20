@@ -16,10 +16,11 @@
         android:layout_height="match_parent"
         android:background="?attr/uifabricToolbarBackgroundColor">
 
-        <kudos26.bounty.view.BottomSheetView
-            android:layout_width="match_parent"
+        <androidx.essentials.backdrop.BottomSheetView
             android:layout_height="match_parent"
-            app:layout_behavior="@string/bottom_sheet_behavior">
+            app:cardCornerRadius="@dimen/radius_global"
+            android:layout_width="match_parent"
+            app:cardElevation="0dp">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -68,6 +69,6 @@
                         tools:listitem="@layout/view_list_item" />
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </kudos26.bounty.view.BottomSheetView>
+        </androidx.essentials.backdrop.BottomSheetView>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

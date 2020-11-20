@@ -3,6 +3,7 @@ package kudos26.bounty.list
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.microsoft.officeuifabric.listitem.ListItemDivider
+import kotlinx.android.synthetic.main.item_due.view.*
 import kudos26.bounty.R
 import kudos26.bounty.adapter.EmptyAdapter
 import kudos26.bounty.adapter.LoadingAdapter
@@ -91,10 +93,13 @@ class Dues(
         override fun onBindViewHolder(holder: DueHolder, position: Int) {
             getItem(position).apply {
                 if (firebaseAuth.currentUser?.uid == debtor.uid) {
-                    holder.view.root.isClickable = true
-                    holder.itemView.setOnClickListener {
+                    holder.itemView.popupMenu.visibility = View.VISIBLE
+                    holder.itemView.popupMenu.setOnClickListener {
                         onDueClickListener?.onClick(this)
                     }
+                } else {
+                    holder.itemView.popupMenu.visibility = View.GONE
+                    holder.itemView.popupMenu.setOnClickListener {}
                 }
                 holder.view.amountTextView.text = "₹${amount.amount}"
                 database.user(debtor.uid).name.observeValue({

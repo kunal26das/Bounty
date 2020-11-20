@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseUser
@@ -18,9 +19,9 @@ import org.koin.android.viewmodel.ext.android.viewModel
 
 class SplashScreen : Activity() {
 
-    override val viewModel by viewModel<SplashViewModel>()
     private val googleSignInClient: GoogleSignInClient by inject()
     private val notificationManager: NotificationManager by inject()
+    override val viewModel by viewModel<SplashViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,13 @@ class SplashScreen : Activity() {
             viewModel.currentUser.observe(this, object : Observer<FirebaseUser?> {
                 override fun onChanged(it: FirebaseUser?) {
                     when (it) {
-                        null -> startActivityForResult(googleSignInClient.signInIntent, GOOGLE_SIGN_IN)
+                        null -> {
+                            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                                if (result.resultCode == RESULT_OK) {
+                                    viewModel.googleSignIn(result.data)
+                                }
+                            }.launch(googleSignInClient.signInIntent)
+                        }
                         else -> {
                             Firebase.initialize(this@SplashScreen)
                             viewModel.currentUser.removeObserver(this)
@@ -65,22 +72,6 @@ class SplashScreen : Activity() {
                     NotificationManager.IMPORTANCE_DEFAULT
             ))
         }
-    }
-
-    // Activity Result
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            GOOGLE_SIGN_IN -> when (resultCode) {
-                RESULT_OK -> viewModel.googleSignIn(data)
-                else -> finish()
-            }
-        }
-
-    }
-
-    companion object {
-        const val GOOGLE_SIGN_IN = 101
     }
 
 }

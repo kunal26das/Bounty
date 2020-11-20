@@ -12,7 +12,7 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import java.util.*
 
-class Firebase {
+class Firebase private constructor() {
 
     fun onNewToken(token: String) {
         updateInstanceId(token)

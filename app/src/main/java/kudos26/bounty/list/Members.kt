@@ -107,14 +107,14 @@ class Members(
             getItem(position).apply {
                 holder.listItemView.subtitle = date.date
                 holder.listItemView.footer = when (isAdmin) {
-                    true -> "Admin"
+                    true -> context.getString(R.string.admin)
                     else -> {
                         if (adminAccess) {
                             AppCompatImageView(context).let {
                                 it.setImageDrawable(context.getDrawable(R.drawable.ic_more_vert_24dp))
                                 it.drawable?.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                                        ThemeUtil.getThemeAttrColor(context, R.attr.uifabricToolbarBackgroundColor),
-                                        BlendModeCompat.SRC_IN
+                                    ThemeUtil.getThemeAttrColor(context, R.attr.uifabricToolbarBackgroundColor),
+                                    BlendModeCompat.SRC_IN
                                 )
                                 holder.listItemView.customAccessoryView = it
                                 TypedValue().apply {

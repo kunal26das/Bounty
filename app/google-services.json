@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "445684120074-3s7rasv65a14rmmqlu9rfkgmv3f2qm91.apps.googleusercontent.com",
+          "client_id": "445684120074-7i8qsc2kqo5aodi7iel3a891n2p7nnkk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "kudos26.bounty",
-            "certificate_hash": "0098c070dc2b8c040c1cd0ff2e6e4900896782ef"
+            "certificate_hash": "c87984ca9ad0b3e8a3ee58dd5c284ec7ffa8faef"
           }
         },
         {
@@ -41,7 +41,8 @@
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-2292299294214510~1986095740"
     }
   ],
   "configuration_version": "1"
